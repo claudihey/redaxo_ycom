@@ -4,6 +4,7 @@
 ### Passwort zurücksetzen- Formular
 
 Da man auswählen kann, ob man ein Login verwenden möchte, oder die E-mail als Login genutzt wird, muss man das untenstehende Formular entsprechend anpassen. Im Beispiel geht es von der E-Mail als Authentifizierungsfeld aus.
+Achte beim Anlegen des Artikels darauf, dass die Zugriffsrechte für alle Benutzer freigegeben sind.
 
 ```
 generate_key|activation_key
@@ -20,18 +21,6 @@ action|tpl2email|resetpassword_de|email|
 ```
 
 
-### E-Mail-Template `resetpassword_de` für Passwort zurücksetzen anlegen
-
-```
-<!--
-Bitte bei (888) die Id des Artikels für die Seite "Passwort zurücksetzen" eintragen
--->
-<p>Bitte klicken Sie diesen Link, um das Passwort zurück zu setzen:</p>
-<p><a href="<?= trim(rex::getServer(),'/') . rex_getUrl(888) ?>?rex_ycom_activation_key=REX_YFORM_DATA[field=activation_key]&rex_ycom_id=REX_YFORM_DATA[field=email]"><?= trim(rex::getServer(),'/') . rex_getUrl(888) ?>?rex_ycom_activation_key=REX_YFORM_DATA[field=activation_key]&rex_ycom_id=REX_YFORM_DATA[field=email]</a></p>
-
-```
-
-
 ### E-Mail Bestätigungsseite erstellen
 
 ```
@@ -39,8 +28,23 @@ objparams|submit_btn_show|0
 objparams|send|1
 objparams|csrf_protection|0
 
-validate|ycom_auth_login|activation_key=rex_ycom_activation_key,email=rex_ycom_id|status=1|Zugang wurde bereits bestätigt oder ist schon fehlgeschlagen|status
+validate|ycom_auth_login|activation_key=rex_ycom_activation_key,email=rex_ycom_id|status=1|Zugang wurde bereits bestätigt oder ist fehlgeschlagen|status
 
 action|ycom_auth_db|update
 action|html|<b>Sie sind eingeloggt. Das Passwort kann nun geändert werden.</b>
 ```
+
+In diesem Beispiel sind nur die User mit Status = 1 (Zugang wurde bestätigt und ist aktiv) berechtigt, das Passwort zurückzusetzen. 
+
+
+### E-Mail-Template `resetpassword_de` für Passwort zurücksetzen anlegen
+
+```
+<!--
+Bitte bei (888) die Id des Artikels für die "E-Mail Bestätigungsseite" eintragen.
+-->
+<p>Bitte klicken Sie diesen Link, um das Passwort zurück zu setzen:</p>
+<p><a href="<?= trim(rex::getServer(),'/') . rex_getUrl(888) ?>?rex_ycom_activation_key=REX_YFORM_DATA[field=activation_key]&rex_ycom_id=REX_YFORM_DATA[field=email]"><?= trim(rex::getServer(),'/') . rex_getUrl(888) ?>?rex_ycom_activation_key=REX_YFORM_DATA[field=activation_key]&rex_ycom_id=REX_YFORM_DATA[field=email]</a></p>
+
+```
+
